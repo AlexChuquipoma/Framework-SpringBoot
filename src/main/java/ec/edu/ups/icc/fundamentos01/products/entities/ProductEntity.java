@@ -1,24 +1,27 @@
-package ec.edu.ups.icc.fundamentos01.products.dtos;
+package ec.edu.ups.icc.fundamentos01.products.entities;
 
-public class ProductResponseDto {
-    private Long id; // Cambiado a Long para DB
+import ec.edu.ups.icc.fundamentos01.entities.BaseModel;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "products")
+public class ProductEntity extends BaseModel {
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private Double price;
+
+    @Column(nullable = false)
     private Integer stock;
 
-    public ProductResponseDto(Long id, String name, String description, Double price, Integer stock) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.stock = stock;
-    }
-    
-    // Getters y Setters...
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public ProductEntity() {}
 
+    // Getters y Setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

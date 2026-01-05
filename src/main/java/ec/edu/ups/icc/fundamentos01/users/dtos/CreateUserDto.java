@@ -4,22 +4,22 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class UpdateUserDto {
+public class CreateUserDto {
 
-    @NotBlank
-    @Size(min = 3, max = 150)
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 3, max = 150, message = "El nombre debe tener entre 3 y 150 caracteres")
     private String name;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Debe ingresar un email válido")
     @Size(max = 150)
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String password;
 
-    public UpdateUserDto() {}
+    public CreateUserDto() {}
 
     // Getters y Setters
     public String getName() { return name; }
