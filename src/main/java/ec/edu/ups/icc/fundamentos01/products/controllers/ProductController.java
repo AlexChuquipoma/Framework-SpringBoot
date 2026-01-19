@@ -3,50 +3,63 @@ package ec.edu.ups.icc.fundamentos01.products.controllers;
 import ec.edu.ups.icc.fundamentos01.products.dtos.*;
 import ec.edu.ups.icc.fundamentos01.products.services.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductService service;
+    private final ProductService productService;
 
-    public ProductController(ProductService service) {
-        this.service = service;
-    }
-
-    @GetMapping
-    public List<ProductResponseDto> findAll() {
-        return service.findAll();
-    }
-
-    // 👇 AQUÍ AGREGAMOS ("id")
-    @GetMapping("/{id}")
-    public ProductResponseDto findOne(@PathVariable("id") int id) {
-        return service.findOne(id);
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping
-    public ProductResponseDto create(@Valid @RequestBody CreateProductDto dto) {
-        return service.create(dto);
+    public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody CreateProductDto dto) {
+        ProductResponseDto created = productService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // 👇 AQUÍ TAMBIÉN
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> findAll() {
+        List<ProductResponseDto> products = productService.findAll();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> findById(@PathVariable Long id) {
+        ProductResponseDto product = productService.findById(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ProductResponseDto>> findByUserId(@PathVariable Long userId) {
+        List<ProductResponseDto> products = productService.findByUserId(userId);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ProductResponseDto>> findByCategoryId(@PathVariable Long categoryId) {
+        List<ProductResponseDto> products = productService.findByCategoryId(categoryId);
+        return ResponseEntity.ok(products);
+    }
+
     @PutMapping("/{id}")
-    public ProductResponseDto update(@PathVariable("id") int id, @Valid @RequestBody UpdateProductDto dto) {
-        return service.update(id, dto);
+    public ResponseEntity<ProductResponseDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateProductDto dto
+    ) {
+        ProductResponseDto updated = productService.update(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
-    // 👇 Y AQUÍ
-    @PatchMapping("/{id}")
-    public ProductResponseDto partialUpdate(@PathVariable("id") int id, @RequestBody PartialUpdateProductDto dto) {
-        return service.partialUpdate(id, dto);
-    }
-
-    // 👇 Y FINALMENTE AQUÍ
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") int id) {
-        service.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

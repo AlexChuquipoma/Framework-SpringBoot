@@ -1,33 +1,41 @@
 package ec.edu.ups.icc.fundamentos01.products.dtos;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class ProductResponseDto {
-    private Long id; // Cambiado a Long para DB
-    private String name;
-    private String description;
-    private Double price;
-    private Integer stock;
 
-    public ProductResponseDto(Long id, String name, String description, Double price, Integer stock) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.stock = stock;
+    public Long id;
+    public String name;
+    public Double price;
+    public String description;
+
+    // ============== OBJETOS ANIDADOS ==============
+
+    public UserSummaryDto user;
+
+    // ============== CATEGORÍAS (N:N) - Lista de objetos ==============
+    public List<CategorySummaryDto> categories;
+
+    // Legacy support (1:N) - Primera categoría para compatibilidad con tests
+    public CategorySummaryDto category;
+
+    // ============== AUDITORÍA ==============
+
+    public LocalDateTime createdAt;
+    public LocalDateTime updatedAt;
+
+    // ============== DTOs INTERNOS ==============
+
+    public static class UserSummaryDto {
+        public Long id;
+        public String name;
+        public String email;
     }
-    
-    // Getters y Setters...
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
-
-    public Integer getStock() { return stock; }
-    public void setStock(Integer stock) { this.stock = stock; }
+    public static class CategorySummaryDto {
+        public Long id;
+        public String name;
+        public String description;
+    }
 }

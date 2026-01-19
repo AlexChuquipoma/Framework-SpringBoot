@@ -2,6 +2,8 @@ package ec.edu.ups.icc.fundamentos01.users.services;
 
 import ec.edu.ups.icc.fundamentos01.exception.domain.ConflictException;
 import ec.edu.ups.icc.fundamentos01.exception.domain.NotFoundException;
+import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
+import ec.edu.ups.icc.fundamentos01.products.services.ProductService;
 import ec.edu.ups.icc.fundamentos01.users.dtos.*;
 import ec.edu.ups.icc.fundamentos01.users.models.User;
 import ec.edu.ups.icc.fundamentos01.users.repositories.UserRepository;
@@ -14,9 +16,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
+    private final ProductService productService;
 
-    public UserServiceImpl(UserRepository userRepo) {
+    public UserServiceImpl(UserRepository userRepo, ProductService productService) {
         this.userRepo = userRepo;
+        this.productService = productService;
     }
 
     @Override
@@ -87,5 +91,33 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("No se puede eliminar. Usuario no encontrado con ID: " + id);
         }
         userRepo.deleteById((long) id);
+    }
+
+    @Override
+    public List<ProductResponseDto> getProductsByUserId(Long userId) {
+        // Verificar que el usuario existe
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("Usuario no encontrado con ID: " + userId);
+        }
+
+        // Delegar al ProductService que ya tiene la lógica de conversión
+        return productService.findByUserId(userId);
+    }
+
+    @Override
+    public List<ProductResponseDto> getProductsByUserIdWithFilters(
+            Long userId,
+            String name,
+            Double minPrice,
+            Double maxPrice,
+            Long categoryId
+    ) {
+        // Verificar que el usuario existe
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("Usuario no encontrado con ID: " + userId);
+        }
+
+        // Delegar al ProductService con filtros (consulta a nivel de BD)
+        return productService.findByUserIdWithFilters(userId, name, minPrice, maxPrice, categoryId);
     }
 }
